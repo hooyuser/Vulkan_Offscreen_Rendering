@@ -47,8 +47,6 @@ private:
 	uint32_t myQueueFamilyIndex = -1;
 
 
-
-
 	void initVulkan() {
 		createInstance();
 		pickPhysicalDevice();
@@ -67,8 +65,8 @@ private:
 		VkSubmitInfo submitInfo{};
 		submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 		submitInfo.waitSemaphoreCount = 0;
-		//submitInfo.pWaitSemaphores = nullptr;
-		//submitInfo.pWaitDstStageMask = nullptr;
+		submitInfo.pWaitSemaphores = nullptr;
+		submitInfo.pWaitDstStageMask = nullptr;
 		submitInfo.commandBufferCount = 1;
 		submitInfo.pCommandBuffers = &commandBuffer;
 		submitInfo.signalSemaphoreCount = 0;
@@ -79,7 +77,7 @@ private:
 		}
 
 		VkResult res = vkWaitForFences(device, 1, &renderFence, VK_TRUE, 10000000000);
-		
+
 		VkImageSubresource subResource{};
 		subResource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 		VkSubresourceLayout subResourceLayout;
@@ -92,16 +90,17 @@ private:
 		if (subResourceLayout.rowPitch == texWidth * 4) {
 			vkMapMemory(device, stagingImageMemory, 0, imageBytes, 0, (void**)&imagedata);
 			imagedata += subResourceLayout.offset;
-			const char* filename = "D:/output.png";
+			const char* filename = "./image_output/output.png";
 			char* outputImage = (char*)malloc(imageBytes);
 			memcpy(outputImage, imagedata, imageBytes);
 			stbi_write_png(filename, texWidth, texHeight, 4, outputImage, 0);
 			std::cout << "Framebuffer image saved to " << filename << std::endl;
+			free(outputImage);
 		}
 		else {
 			vkMapMemory(device, stagingImageMemory, 0, VK_WHOLE_SIZE, 0, (void**)&imagedata);
 			imagedata += subResourceLayout.offset;
-			const char* filename = "D:/output.ppm";
+			const char* filename = "./image_output/output.ppm";
 
 			std::ofstream file(filename, std::ios::out | std::ios::binary);
 
@@ -133,7 +132,7 @@ private:
 
 			std::cout << "Framebuffer image saved to " << filename << std::endl;
 		}
-	
+
 		vkUnmapMemory(device, stagingImageMemory);
 
 	}
@@ -645,7 +644,7 @@ int main() {
 	start = clock();
 	OfflineRenderingApplication app;
 	app.run();
-	end = clock();   //½áÊøÊ±¼ä
+	end = clock();
 	std::cout << "time = " << double(end - start) / CLOCKS_PER_SEC << "s" << std::endl;
 	return EXIT_SUCCESS;
 }
