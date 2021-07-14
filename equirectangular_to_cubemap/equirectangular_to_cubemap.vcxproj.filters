@@ -13,28 +13,28 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\shaders">
-      <UniqueIdentifier>{7409f783-012c-4d79-85cc-9e96dc816e32}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\textures">
-      <UniqueIdentifier>{1a002d40-55ff-4be6-aa6f-dd62c746e432}</UniqueIdentifier>
+      <UniqueIdentifier>{9f966648-2793-40ce-97ea-01e9f3204eed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\shaders">
+      <UniqueIdentifier>{bb519761-3628-4ee8-abfe-7c8875123131}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\glsl_shaders">
-      <UniqueIdentifier>{46b58863-2e7b-4f41-92d4-3faaac711e12}</UniqueIdentifier>
+      <UniqueIdentifier>{acfb3d9f-7d52-4a0b-9b0f-a01419de0d14}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\image_output">
-      <UniqueIdentifier>{23bf56c7-60ac-4fb7-a4e8-83f9d8d041dc}</UniqueIdentifier>
+      <UniqueIdentifier>{8496e132-153e-4d3e-8db4-f11cf8bc3d55}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="offline_rendering.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\equirectangular_to_cubemap\example.cpp">
+    <ClCompile Include="equirectangular_to_cubemap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="textures\chinese_garden_1k.hdr">
+      <Filter>Source Files\textures</Filter>
+    </None>
     <None Include="shaders\frag.spv">
       <Filter>Source Files\shaders</Filter>
     </None>
@@ -47,13 +47,18 @@
     <None Include="glsl_shaders\shader.vert">
       <Filter>Source Files\glsl_shaders</Filter>
     </None>
+    <None Include="textures\sunset.exr">
+      <Filter>Source Files\textures</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="textures\texture.png">
-      <Filter>Source Files\textures</Filter>
-    </Image>
     <Image Include="image_output\output.png">
       <Filter>Source Files\image_output</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="tinyexr.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

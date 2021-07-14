@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{e69460b7-fce3-49b4-be8b-2209954c9af2}</ProjectGuid>
-    <RootNamespace>testofflinerendering</RootNamespace>
+    <ProjectGuid>{383d5848-7e6a-4ed1-b4d9-8d37fda9501a}</ProjectGuid>
+    <RootNamespace>equirectangulartocubemap</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -120,6 +120,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -134,6 +135,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -143,18 +145,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\equirectangular_to_cubemap\example.cpp" />
-    <ClCompile Include="offline_rendering.cpp" />
+    <ClCompile Include="equirectangular_to_cubemap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="glsl_shaders\shader.frag" />
     <None Include="glsl_shaders\shader.vert" />
     <None Include="shaders\frag.spv" />
     <None Include="shaders\vert.spv" />
+    <None Include="textures\chinese_garden_1k.hdr" />
+    <None Include="textures\sunset.exr" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="image_output\output.png" />
-    <Image Include="textures\texture.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="tinyexr.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

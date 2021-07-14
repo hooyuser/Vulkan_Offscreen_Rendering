@@ -12,12 +12,23 @@
 #include <fstream>
 #include <stdexcept>
 #include <ctime>
+#include <string>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
+
+#if defined(_WIN32)
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#endif
+#define TINYEXR_IMPLEMENTATION
+#include "tinyexr.h"
+
+
 
 
 struct Vertex {
@@ -64,15 +75,17 @@ struct UniformBufferObject {
 };
 
 const std::vector<Vertex> vertices = {
-	{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
-	{{-0.5f, 0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f}},
-	{{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
-	{{0.5f, -0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}}
+	{{-1.0f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},
+	{{-1.0f, 0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f}},
+	{{1.0f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},
+	{{1.0f, -0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}}
 };
 
 const std::vector<uint16_t> indices = {
 	0, 1, 2, 2, 3, 0
 };
+
+
 
 
 class OfflineRenderingApplication {
@@ -91,7 +104,7 @@ private:
 	VkImage colorAttachmentImage;
 	VkDeviceMemory colorAttachmentImageMemory;
 	VkImageView colorAttachmentImageView;
-	
+
 	VkImage depthImage;
 	VkDeviceMemory depthImageMemory;
 	VkImageView depthImageView;
@@ -129,7 +142,7 @@ private:
 	VkFence renderFence;
 
 	int texWidth = 1024;
-	int texHeight = 1024;
+	int texHeight = 512;
 
 	VkExtent2D texExtent{ (uint32_t)texWidth, (uint32_t)texHeight };
 	VkDeviceSize imageSize = texWidth * texHeight * 4;
@@ -147,7 +160,7 @@ private:
 		createDescriptorSetLayout();
 		createGraphicsPipeline();
 		createDepthResources();
-		createFramebuffer();	
+		createFramebuffer();
 		createTextureImage();
 		createTextureImageView();
 		createTextureSampler();
@@ -155,7 +168,7 @@ private:
 		createIndexBuffer();
 		createUniformBuffers();
 		createDescriptorPool();
-		createDescriptorSet();		
+		createDescriptorSet();
 		createCommandBuffer();
 		createSyncObjects();
 	}
@@ -367,9 +380,9 @@ private:
 
 	void createOutputImage() {
 
-		createImage(texWidth, texHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, colorAttachmentImage, colorAttachmentImageMemory);
+		createImage(texWidth, texHeight, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, colorAttachmentImage, colorAttachmentImageMemory);
 
-		createImage(texWidth, texHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_LINEAR, VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingImage, stagingImageMemory);
+		createImage(texWidth, texHeight, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_TILING_LINEAR, VK_BUFFER_USAGE_TRANSFER_DST_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingImage, stagingImageMemory);
 
 	}
 
@@ -392,6 +405,8 @@ private:
 		if (vkCreateImage(device, &imageInfo, nullptr, &image) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create image!");
 		}
+
+		int a = 1;
 
 		VkMemoryRequirements memRequirements;
 		vkGetImageMemoryRequirements(device, image, &memRequirements);
@@ -418,7 +433,7 @@ private:
 	}
 
 	void createColorAttachmentImageView() {
-		colorAttachmentImageView = createImageView(colorAttachmentImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
+		colorAttachmentImageView = createImageView(colorAttachmentImage, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
 	}
 
 	VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags) {
@@ -444,7 +459,7 @@ private:
 
 	void createRenderPass() {
 		VkAttachmentDescription colorAttachment{};
-		colorAttachment.format = VK_FORMAT_R8G8B8A8_SRGB;
+		colorAttachment.format = VK_FORMAT_R8G8B8A8_UNORM;
 		colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
 		colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
 		colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -718,7 +733,7 @@ private:
 		}
 	}
 
-	
+
 	void createDepthResources() {
 		VkFormat depthFormat = findDepthFormat();
 
@@ -749,15 +764,50 @@ private:
 			VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
 		);
 	}
-	
-	void createTextureImage() {
-		int texWidth, texHeight, texChannels;
-		stbi_uc* pixels = stbi_load("textures/texture.png", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
-		VkDeviceSize imageSize = texWidth * texHeight * 4;
 
-		if (!pixels) {
-			throw std::runtime_error("failed to load texture image!");
+	void createTextureImage() {
+		// std::string textureImageFilePath = "textures/chinese_garden_1k.hdr";
+		std::string textureImageFilePath = "textures/river_2K.exr";
+
+		std::string extensionName = textureImageFilePath.substr(textureImageFilePath.find_last_of(".") + 1);
+		int texImageWidth, texImageHeight;
+		int texImageChannels = 3;
+		float* pixels;
+		VkDeviceSize imageSize;
+
+		if (extensionName == "hdr") {
+			pixels = stbi_loadf(textureImageFilePath.c_str(), &texImageWidth, &texImageHeight, &texImageChannels, 0);
+			imageSize = texImageWidth * texImageHeight * texImageChannels * sizeof(float);
+
+			if (!pixels) {
+				throw std::runtime_error("failed to load texture image!");
+			}
 		}
+		else if (extensionName == "exr") {
+			float* rgba;
+			const char* err;
+			int ret = LoadEXR(&rgba, &texImageWidth, &texImageHeight, textureImageFilePath.c_str(), &err);
+			if (ret != TINYEXR_SUCCESS) {
+				if (err) {
+					printf("err: %s\n", err);
+					FreeEXRErrorMessage(err);
+					throw std::runtime_error("error occurs when loading exr!");
+				}
+			}
+			imageSize = texImageWidth * texImageHeight * texImageChannels * sizeof(float);
+			pixels = (float*)malloc((size_t)imageSize);
+
+			for (int i = 0; i < texImageWidth * texImageHeight; i++) {
+				for (int ch = 0; ch < 3; ch++) {
+					pixels[i * 3 + ch] = rgba[i * 4 + ch];
+				}
+			}
+			free(rgba);
+		}
+		else {
+			throw std::runtime_error("unsupported image format!");
+		}
+
 
 		VkBuffer stagingBuffer;
 		VkDeviceMemory stagingBufferMemory;
@@ -768,13 +818,13 @@ private:
 		memcpy(data, pixels, static_cast<size_t>(imageSize));
 		vkUnmapMemory(device, stagingBufferMemory);
 
-		stbi_image_free(pixels);
+		free(pixels);
 
-		createImage(texWidth, texHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
+		createImage(texImageWidth, texImageHeight, VK_FORMAT_R32G32B32_SFLOAT, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
 
-		transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-		copyBufferToImage(stagingBuffer, textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
-		transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+		transitionImageLayout(textureImage, VK_FORMAT_R32G32B32_SFLOAT, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+		copyBufferToImage(stagingBuffer, textureImage, static_cast<uint32_t>(texImageWidth), static_cast<uint32_t>(texImageHeight));
+		transitionImageLayout(textureImage, VK_FORMAT_R32G32B32_SFLOAT, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 		vkDestroyBuffer(device, stagingBuffer, nullptr);
 		vkFreeMemory(device, stagingBufferMemory, nullptr);
@@ -830,7 +880,7 @@ private:
 	}
 
 	void createTextureImageView() {
-		textureImageView = createImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
+		textureImageView = createImageView(textureImage, VK_FORMAT_R32G32B32_SFLOAT, VK_IMAGE_ASPECT_COLOR_BIT);
 	}
 
 	void createTextureSampler() {
@@ -1171,7 +1221,7 @@ private:
 		VkCommandBuffer oneShotCommandBuffer;
 		vkAllocateCommandBuffers(device, &allocInfo, &oneShotCommandBuffer);
 
-		
+
 
 		VkCommandBufferBeginInfo beginInfo{};
 		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
