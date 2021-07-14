@@ -16,6 +16,15 @@
     <Filter Include="Source Files\shaders">
       <UniqueIdentifier>{7409f783-012c-4d79-85cc-9e96dc816e32}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\textures">
+      <UniqueIdentifier>{1a002d40-55ff-4be6-aa6f-dd62c746e432}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\glsl_shaders">
+      <UniqueIdentifier>{46b58863-2e7b-4f41-92d4-3faaac711e12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\image_output">
+      <UniqueIdentifier>{23bf56c7-60ac-4fb7-a4e8-83f9d8d041dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="offline_rendering.cpp">
@@ -29,5 +38,19 @@
     <None Include="shaders\vert.spv">
       <Filter>Source Files\shaders</Filter>
     </None>
+    <None Include="glsl_shaders\shader.frag">
+      <Filter>Source Files\glsl_shaders</Filter>
+    </None>
+    <None Include="glsl_shaders\shader.vert">
+      <Filter>Source Files\glsl_shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\texture.png">
+      <Filter>Source Files\textures</Filter>
+    </Image>
+    <Image Include="image_output\output.png">
+      <Filter>Source Files\image_output</Filter>
+    </Image>
   </ItemGroup>
 </Project>
