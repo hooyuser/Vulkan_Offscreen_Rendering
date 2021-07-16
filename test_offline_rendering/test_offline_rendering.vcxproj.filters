@@ -33,6 +33,9 @@
     <ClCompile Include="..\equirectangular_to_cubemap\example.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\equirectangular_to_cubemap\equirectangular_to_cubemap_backup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\frag.spv">

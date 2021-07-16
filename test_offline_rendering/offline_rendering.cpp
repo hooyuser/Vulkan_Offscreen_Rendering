@@ -142,7 +142,7 @@ private:
 		createLogicalDevice();
 		createCommandPool();
 		createOutputImage();
-		createColorAttachmentImageView();
+		createAttachmentImageView();
 		createRenderPass();
 		createDescriptorSetLayout();
 		createGraphicsPipeline();
@@ -417,7 +417,7 @@ private:
 		}
 	}
 
-	void createColorAttachmentImageView() {
+	void createAttachmentImageView() {
 		colorAttachmentImageView = createImageView(colorAttachmentImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
 	}
 

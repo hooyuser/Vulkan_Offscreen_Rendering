@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\equirectangular_to_cubemap\equirectangular_to_cubemap_backup.cpp" />
     <ClCompile Include="..\equirectangular_to_cubemap\example.cpp" />
     <ClCompile Include="offline_rendering.cpp" />
   </ItemGroup>
